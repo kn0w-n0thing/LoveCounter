@@ -33,23 +33,26 @@ describe("LoveCounter", function () {
 
     let location;
     let myLocations;
+    let romance;
 
+    // add first moment
     location = convertCoordinateToLocation(1, 1);
-    await loveCounter.addMoment(location, 'Hello world');
+    await loveCounter.addMoment(location, 'Hello world 1');
 
     myLocations = await loveCounter.getMyLocations();
     expect(myLocations.length).to.equal(1);
-    console.log()
     expect((await loveCounter.getOccupiedLocations()).length).to.equal(1);
+    romance = await loveCounter.getRomance(location);
+    expect(romance).to.equal('Hello world 1')
 
+    // add second momnent
     location = convertCoordinateToLocation(1, 2);
-    await loveCounter.addMoment(location, 'Hello world');
-
+    await loveCounter.addMoment(location, 'Hello world 2');
     myLocations = await loveCounter.getMyLocations();    
     expect(myLocations.length).to.equal(2);
-    let [resultX, resultY] = convertLocationToCoordinate(myLocations[0]);
-    console.log(resultX + ', ' + resultY);
-    // console.log(convertLocationToCoordinate(myLocations[0]));
+    romance = await loveCounter.getRomance(location);
+    expect(romance).to.equal('Hello world 2')
+    
     expect((await loveCounter.getOccupiedLocations()).length).to.equal(2);
   });
 

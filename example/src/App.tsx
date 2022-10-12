@@ -1,7 +1,7 @@
 import { Button, Input } from 'antd';
 import { useEffect, useState } from "react";
 import './App.css';
-import { addMoment, getMoments } from "./requests/LoveCounter";
+import {addMoment, getMyMoments, getOccupiedLocations} from "./requests/LoveCounter";
 
 const App: React.FC = () => {
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
@@ -72,8 +72,15 @@ const App: React.FC = () => {
 
           <p>
             <Button type="primary"
-                    onClick={() => { getMoments(ethereumAccount).then(r => alert(r)) }}>
-              Get Moments
+                    onClick={() => { getMyMoments(ethereumAccount).then(r => alert(JSON.stringify(r))) }}>
+              Get My Moments
+            </Button>
+          </p>
+
+          <p>
+            <Button type="primary"
+                    onClick={() => { getOccupiedLocations(ethereumAccount).then(r => alert(JSON.stringify(r))) }}>
+              Get Occupied Locations
             </Button>
           </p>
         </header>

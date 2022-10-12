@@ -1,17 +1,14 @@
 import Web3 from 'web3/dist/web3.min.js';
 
+const { BigNumber } = require("ethers");
+
 const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "x",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "y",
-                "type": "uint256"
+                "internalType": "uint64",
+                "name": "location",
+                "type": "uint64"
             },
             {
                 "internalType": "string",
@@ -26,29 +23,44 @@ const abi = [
     },
     {
         "inputs": [],
-        "name": "getMoments",
+        "name": "getMyLocations",
         "outputs": [
             {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "x",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "y",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "romance",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct LoveCounter.Moment[]",
+                "internalType": "uint64[]",
                 "name": "",
-                "type": "tuple[]"
+                "type": "uint64[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getOccupiedLocations",
+        "outputs": [
+            {
+                "internalType": "uint64[]",
+                "name": "",
+                "type": "uint64[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint64",
+                "name": "location",
+                "type": "uint64"
+            }
+        ],
+        "name": "getRomance",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -67,21 +79,49 @@ const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "records",
+        "name": "locationMap",
         "outputs": [
             {
-                "internalType": "uint256",
-                "name": "x",
-                "type": "uint256"
-            },
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
                 "internalType": "uint256",
-                "name": "y",
+                "name": "",
                 "type": "uint256"
-            },
+            }
+        ],
+        "name": "occupiedLocations",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "name": "romanceMap",
+        "outputs": [
             {
                 "internalType": "string",
-                "name": "romance",
+                "name": "",
                 "type": "string"
             }
         ],
@@ -90,13 +130,26 @@ const abi = [
     }
 ];
 
-const address = '0x38954056186de59c56CD5a8E1ffE7b324bc5f77F';
+const address = '0xCB6DD0c2eA49A46db7791C46BA682193De332a41';
 const web3 = new Web3(window.ethereum);
 const contract = new web3.eth.Contract(abi, address);
 
+const base = BigNumber.from(2);
+
+function convertCoordinateToLocation(x, y) {
+    let bigNumberX = BigNumber.from(x);
+    let bigNumberY = BigNumber.from(y);
+    return bigNumberX.mul(base.pow(32)).add(bigNumberY);
+}
+
+function convertLocationToCoordinate(location) {
+    let bigNumberLocation = BigNumber.from(location)
+    return [bigNumberLocation.div(base.pow(32)).toNumber(), bigNumberLocation.mask(32).toNumber()]
+}
+
 export async function addMoment(account, locationX, locationY, message) {
     await contract.methods
-        .addMoment(locationX, locationY, message)
+        .addMoment(convertCoordinateToLocation(locationX, locationY), message)
         .send({from: account}, function (err, res) {
             if (err) {
                 console.log("An error occurred", err)
@@ -106,13 +159,47 @@ export async function addMoment(account, locationX, locationY, message) {
         });
 }
 
-export async function getMoments(account) {
-    return await contract.methods.getMoments()
+export async function getMyMoments(account) {
+    let moments = [];
+    let myLocations = await contract.methods.getMyLocations()
         .call({from: account}, function (err, res) {
             if (err) {
-                console.log("An error occurred", err)
-                return
+                console.log("An error occurred", err);
+                return;
             }
-            console.log("Hash of the transaction: " + res)
+            console.log("Hash of the transaction: " + res);
         });
+    console.log(myLocations);
+
+    for (const value of myLocations) {
+        let romance = await contract.methods.getRomance(value)
+            .call({from: account}, function (err, res) {
+                if (err) {
+                    console.log("An error occurred", err);
+                }
+                console.log("Hash of the transaction: " + res);
+            });
+        let [x, y] = convertLocationToCoordinate(value);
+        moments.push({x, y, romance});
+    }
+    console.log(moments);
+    return moments;
+}
+
+export async function getOccupiedLocations(account) {
+    let occupiedLocations = await contract.methods.getOccupiedLocations()
+        .call({from: account}, function (err, res) {
+            if (err) {
+                console.log("An error occurred", err);
+                return;
+            }
+            console.log("Hash of the transaction: " + res);
+        });
+    let locations = [];
+    console.log(occupiedLocations)
+    for (const value of occupiedLocations) {
+        let [x, y] = convertLocationToCoordinate(value);
+        locations.push({x, y});
+    }
+    return locations;
 }
