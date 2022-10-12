@@ -90,12 +90,11 @@ const abi = [
     }
 ];
 
-const address = '0xa7eb0088f33b073f88e2781a11b4198a4534cf53';
+const address = '0x38954056186de59c56CD5a8E1ffE7b324bc5f77F';
 const web3 = new Web3(window.ethereum);
 const contract = new web3.eth.Contract(abi, address);
 
 export async function addMoment(account, locationX, locationY, message) {
-    console.log(contract)
     await contract.methods
         .addMoment(locationX, locationY, message)
         .send({from: account}, function (err, res) {

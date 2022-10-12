@@ -8,14 +8,9 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "x",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "y",
-						"type": "uint256"
+						"internalType": "uint64",
+						"name": "location",
+						"type": "uint64"
 					},
 					{
 						"internalType": "string",
@@ -30,29 +25,44 @@
 			},
 			{
 				"inputs": [],
-				"name": "getMoments",
+				"name": "getMyLocations",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "x",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "y",
-								"type": "uint256"
-							},
-							{
-								"internalType": "string",
-								"name": "romance",
-								"type": "string"
-							}
-						],
-						"internalType": "struct LoveCounter.Moment[]",
+						"internalType": "uint64[]",
 						"name": "",
-						"type": "tuple[]"
+						"type": "uint64[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getOccupiedLocations",
+				"outputs": [
+					{
+						"internalType": "uint64[]",
+						"name": "",
+						"type": "uint64[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint64",
+						"name": "location",
+						"type": "uint64"
+					}
+				],
+				"name": "getRomance",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -71,21 +81,49 @@
 						"type": "uint256"
 					}
 				],
-				"name": "records",
+				"name": "locationMap",
 				"outputs": [
 					{
-						"internalType": "uint256",
-						"name": "x",
-						"type": "uint256"
-					},
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "y",
+						"name": "",
 						"type": "uint256"
-					},
+					}
+				],
+				"name": "occupiedLocations",
+				"outputs": [
+					{
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint64",
+						"name": "",
+						"type": "uint64"
+					}
+				],
+				"name": "romanceMap",
+				"outputs": [
 					{
 						"internalType": "string",
-						"name": "romance",
+						"name": "",
 						"type": "string"
 					}
 				],
@@ -121,11 +159,11 @@
 	},
 	"sources": {
 		"Users/chenxiaoer/Workspace/Ethereum/LoveCounter/contracts/LoveCounter.sol": {
-			"keccak256": "0xc104cd62f77460d1eb2ea44d696f9b518b770da3476e43f40d254c88f4261600",
+			"keccak256": "0x96da94c4245366f4c2619724ce054c0311171f8d182ff626ff9c9c1f8ddff87c",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://3929589a43a43c0d9d2a8e292994162938c34925e5a8711456f84aec05420f86",
-				"dweb:/ipfs/QmXDX3bsQDq8rs5xNQhfLfXMZtT15CshWjgXQxAH9SBQrj"
+				"bzz-raw://f35ea36dea2ed474a3adfad68fa374fa439fda84613118ee0263ea4a7f474287",
+				"dweb:/ipfs/QmXPAo3GgvGdYUXrjLbfw1DAx3sbZ5MzrA8p2SHFGwe5K5"
 			]
 		}
 	},
