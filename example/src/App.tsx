@@ -1,14 +1,22 @@
 import { Button, Input } from 'antd';
 import { useEffect, useState } from "react";
 import './App.css';
-import {addMoment, getMyMoments, getOccupiedLocations} from "./requests/LoveCounter";
+import {
+  addMoment,
+  getMyLocations,
+  getMyMoments,
+  getOccupiedLocations,
+  getRomanceByLocation
+} from "./requests/LoveCounter";
 
 const App: React.FC = () => {
   const [isMetamaskInstalled, setIsMetamaskInstalled] = useState<boolean>(false);
   const [ethereumAccount, setEthereumAccount] = useState<string | null>(null);
-  const [locationX, setLocationX] = useState<number>(0)
-  const [locationY, setLocationY] = useState<number>(0)
-  const [message, setMessage] = useState<string | null>(null)
+  const [addMomentX, setAddMomentX] = useState<number>(0)
+  const [addMomentY, setAddMomentY] = useState<number>(0)
+  const [romance, setRomance] = useState<string | null>(null)
+  const [romanceX, setRomanceX] = useState<number>(0)
+  const [romanceY, setRomanceY] = useState<number>(0)
 
   useEffect(() => {
     if((window as any).ethereum){
@@ -59,14 +67,12 @@ const App: React.FC = () => {
             Please input a romance moment:
           </p>
           <p>
-            <Input size="large" placeholder="x" onChange={e => setLocationX(parseInt(e.target.value))} />
-            <Input size="large" placeholder="y" onChange={e => setLocationY(parseInt(e.target.value))}/>
-            <Input size="large" placeholder="message" onChange={e => setMessage(e.target.value)}/>
-          </p>
-          <p>
+            <Input size="large" placeholder="x" onChange={e => setAddMomentX(parseInt(e.target.value))} />
+            <Input size="large" placeholder="y" onChange={e => setAddMomentY(parseInt(e.target.value))}/>
+            <Input size="large" placeholder="message" onChange={e => setRomance(e.target.value)}/>
             <Button type="primary"
-                    onClick={() => {addMoment(ethereumAccount, locationX, locationY, message)}}>
-              Submit
+                    onClick={() => {addMoment(ethereumAccount, addMomentX, addMomentY, romance)}}>
+              Add a Moment
             </Button>
           </p>
 
@@ -79,8 +85,24 @@ const App: React.FC = () => {
 
           <p>
             <Button type="primary"
+                    onClick={() => { getMyLocations(ethereumAccount).then(r => alert(JSON.stringify(r))) }}>
+              Get My Locations
+            </Button>
+          </p>
+
+          <p>
+            <Button type="primary"
                     onClick={() => { getOccupiedLocations(ethereumAccount).then(r => alert(JSON.stringify(r))) }}>
               Get Occupied Locations
+            </Button>
+          </p>
+
+          <p>
+            <Input size="large" placeholder="x" onChange={e => setRomanceX(parseInt(e.target.value))} />
+            <Input size="large" placeholder="y" onChange={e => setRomanceY(parseInt(e.target.value))}/>
+            <Button type="primary"
+                    onClick={() => {getRomanceByLocation(ethereumAccount, romanceX, romanceY).then(r => alert(JSON.stringify(r)))}}>
+              Get Romance by Location
             </Button>
           </p>
         </header>

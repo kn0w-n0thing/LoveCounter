@@ -186,6 +186,25 @@ export async function getMyMoments(account) {
     return moments;
 }
 
+export async function getMyLocations(account) {
+    let ret = [];
+    let myLocations = await contract.methods.getMyLocations()
+        .call({from: account}, function (err, res) {
+            if (err) {
+                console.log("An error occurred", err);
+                return;
+            }
+            console.log("Hash of the transaction: " + res);
+        });
+
+    for (const value of myLocations) {
+        let [x, y] = convertLocationToCoordinate(value);
+        ret.push({x, y});
+    }
+    console.log(ret);
+    return ret;
+}
+
 export async function getOccupiedLocations(account) {
     let occupiedLocations = await contract.methods.getOccupiedLocations()
         .call({from: account}, function (err, res) {
@@ -202,4 +221,15 @@ export async function getOccupiedLocations(account) {
         locations.push({x, y});
     }
     return locations;
+}
+
+export async function getRomanceByLocation(account, locationX, locationY) {
+    return await contract.methods.getRomance(convertCoordinateToLocation(locationX, locationY))
+        .call({from: account}, function (err, res) {
+            if (err) {
+                console.log("An error occurred", err);
+                return;
+            }
+            console.log("Hash of the transaction: " + res);
+        });
 }
